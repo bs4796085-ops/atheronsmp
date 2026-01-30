@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atheron SMP | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 900: '#050505', 800: '#0a0a0a', 700: '#111111', 600: '#1a1a1a' },
+                        accent: { blue: '#3b82f6', purple: '#8b5cf6', gold: '#fbbf24', pink: '#ec4899' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            background-image: radial-gradient(circle at 50% 0%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #f87171, #ef4444, #b91c1c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Modal Transitions */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .modal-exit { opacity: 0; transform: scale(0.95); transition: opacity 0.2s ease, transform 0.2s ease; }
+        
+        /* Menu Transition */
+        .menu-overlay { transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .menu-overlay.open { transform: translateY(0); }
+
+        .menu-link { transition: all 0.2s; }
+        .menu-link:hover { color: white; transform: translateX(5px); }
+        .menu-icon { transition: all 0.2s; }
+        .menu-link:hover .menu-icon { color: #ef4444; }
+        
+        .tooltip { position: relative; }
+        .tooltip::after {
+            content: "Copied!"; position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px;
+            opacity: 0; transition: opacity 0.2s; pointer-events: none;
+        }
+        .tooltip.show::after { opacity: 1; }
+
+        .feature-card { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .feature-card:hover { border-color: rgba(239,68,68,0.3); transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(239,68,68,0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden">
+
+    <nav class="fixed w-full top-0 z-40 bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="Atheron SMP" class="w-10 h-10 rounded-lg shadow-lg shadow-red-900/20 object-cover">
+                <span class="font-bold text-xl tracking-wide">ATHERON SMP</span>
+            </div>
+            <button onclick="toggleMainMenu()" class="bg-[#1a1a20] hover:bg-[#25252b] border border-white/10 text-white px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
+                <i data-lucide="menu" class="w-4 h-4"></i> Menu
+            </button>
+        </div>
+    </nav>
+
+    <div id="mainMenu" class="menu-overlay fixed inset-0 z-50 bg-[#050508] pt-24 pb-10 overflow-y-auto">
+        <div class="max-w-7xl mx-auto px-6 flex justify-end absolute top-5 right-0 left-0">
+             <button onclick="toggleMainMenu()" class="bg-[#1a1a20] hover:bg-[#25252b] border border-white/10 text-white px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
+                <i data-lucide="x" class="w-4 h-4"></i> Close
+            </button>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-6 h-full flex flex-col justify-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                
+                <div class="space-y-6">
+                    <a href="#" onclick="toggleMainMenu()" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="home" class="menu-icon w-6 h-6 text-indigo-500"></i> Home
+                    </a>
+                    <button onclick="openIpModalFromMenu()" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl w-full text-left">
+                        <i data-lucide="rocket" class="menu-icon w-6 h-6 text-pink-500"></i> How to Join
+                    </button>
+                    <a href="store.html" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="shopping-cart" class="menu-icon w-6 h-6 text-blue-400"></i> Store
+                    </a>
+                </div>
+
+                <div class="space-y-6">
+                    <a href="#why-best" onclick="toggleMainMenu()" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="star" class="menu-icon w-6 h-6 text-yellow-500"></i> Why We're Best
+                    </a>
+                    <a href="#rules" onclick="toggleMainMenu()" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="scroll-text" class="menu-icon w-6 h-6 text-red-500"></i> Server Rules
+                    </a>
+                    <a href="#winners" onclick="toggleMainMenu()" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="trophy" class="menu-icon w-6 h-6 text-orange-500"></i> Season Winners
+                    </a>
+                </div>
+
+                <div class="space-y-6">
+                    <a href="#staff" onclick="toggleMainMenu()" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="users" class="menu-icon w-6 h-6 text-purple-500"></i> Staff Application
+                    </a>
+                    <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="message-circle" class="menu-icon w-6 h-6 text-[#5865F2]"></i> Discord Community
+                    </a>
+                    <a href="admin.html" class="menu-link flex items-center gap-4 text-gray-400 font-bold text-xl">
+                        <i data-lucide="shield" class="menu-icon w-6 h-6 text-emerald-500"></i> Admin Panel
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-auto border-t border-white/5 pt-12 w-full">
+                <a href="store.html" class="inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-lg shadow-red-900/20 transition-all hover:scale-105">
+                    <i data-lucide="crown" class="w-6 h-6"></i>
+                    Official Store
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-20">
+        
+        <div class="bg-red-500/5 border-b border-red-500/10 py-3">
+            <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs md:text-sm">
+                <div class="flex items-center gap-2 text-red-400 font-bold tracking-widest uppercase">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    Season 6 Live Now
+                </div>
+                <div class="text-gray-500 font-medium">
+                    <span class="text-gray-600">Last Winners:</span> S3: Aizgamer98, S4: ItzMeNilesh_, S5: OKA
+                </div>
+            </div>
+        </div>
+
+        <main class="text-center px-6 relative overflow-hidden py-32">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+            
+            <div class="relative z-10 max-w-4xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-red-400 mb-8 uppercase tracking-wider hover:bg-white/10 transition-colors cursor-default">
+                    <i data-lucide="trophy" class="w-3 h-3"></i> #1 Competitive SMP in Asia
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6">
+                    ATHERON SMP <span class="gradient-text">S6</span>
+                </h1>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+                    The ultimate competitive Minecraft SMP experience in Asia. Fair gameplay, custom mechanics, and single admin control ensure the most balanced competitive environment.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                    <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="px-8 py-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-indigo-500/20">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i> Discord
+                    </a>
+                    <button onclick="openIpModal()" class="px-8 py-4 bg-white text-black font-bold text-lg rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2 shadow-lg shadow-white/10">
+                        <i data-lucide="play" class="w-5 h-5 fill-current"></i> Play Now
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <section id="why-best" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-1">1+</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">SEA Server</div>
+                </div>
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-1">200+</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Competitors</div>
+                </div>
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-1">1+</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Admin</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-6 mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px bg-white/10 flex-1"></div>
+                <h2 class="text-2xl font-bold text-white uppercase tracking-widest">Season 6 Details</h2>
+                <div class="h-px bg-white/10 flex-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl">
+                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-6 text-red-500"><i data-lucide="swords" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-3">Competitive Survival</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Gather resources, form teams, and outplay opponents in a high-stakes survival world. No pay-to-win, pure skill.</p>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-red-500"></i> Custom twists & abilities</li>
+                        <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-red-500"></i> One-admin oversight</li>
+                    </ul>
+                </div>
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl">
+                    <div class="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 text-yellow-500"><i data-lucide="crown" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-3">Be the Last Dominant</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Fight for control of the world and prove you're the strongest. Only one team can claim the Season 6 crown.</p>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> Strategic alliances</li>
+                        <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> Late-game raids</li>
+                    </ul>
+                </div>
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-32 bg-blue-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-500"><i data-lucide="zap" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-3">Join in 2 Minutes</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">New here? Follow these steps and you'll be fighting in Season 6 before you know it.</p>
+                    <button onclick="openIpModal()" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-bold text-white transition-colors">View Server IPs</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="rules" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px bg-white/10 flex-1"></div>
+                <h2 class="text-2xl font-bold text-white uppercase tracking-widest">Server Rules</h2>
+                <div class="h-px bg-white/10 flex-1"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl h-full">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-500">
+                        <i data-lucide="message-circle-heart" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">Community Conduct</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-start gap-3"><span class="text-blue-500 mt-1">•</span> Respect all players and staff</li>
+                        <li class="flex items-start gap-3"><span class="text-blue-500 mt-1">•</span> No toxicity, harassment, hate speech, or bullying</li>
+                        <li class="flex items-start gap-3"><span class="text-blue-500 mt-1">•</span> No advertising or spamming in chat</li>
+                        <li class="flex items-start gap-3"><span class="text-blue-500 mt-1">•</span> Respect staff decisions at all times</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl h-full">
+                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-6 text-red-500">
+                        <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">Gameplay Integrity</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> No hacking, cheating, or unfair advantages</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> No exploits, dupes, or bug abuse</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> No griefing, stealing, or damaging builds</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> Spawn builds are strictly protected</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> No lag machines or intentional lag</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> Logging into another player’s account is punishable</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> Alt grinding is not allowed</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">•</span> Seed cracking is prohibited (season ban)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl h-full">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6 text-purple-500">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">Mods & Client Rules</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-start gap-3"><span class="text-purple-500 mt-1">•</span> Any player-tracking mods are NOT allowed (radar, ESP, entity tracking, etc.)</li>
+                        <li class="flex items-start gap-3"><span class="text-purple-500 mt-1">•</span> Mods giving unfair PvP, combat, or survival advantages are banned</li>
+                        <li class="flex items-start gap-3"><span class="text-purple-500 mt-1">•</span> Replay Mod recording is REQUIRED for reports or defense</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-4xl mx-auto px-6 mb-32">
+            <h2 class="text-3xl font-black text-center text-white mb-12">How to Join</h2>
+            <div class="space-y-4">
+                <div class="group flex items-start gap-6 p-6 rounded-2xl border border-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all">
+                    <div class="text-4xl font-black text-white/10 group-hover:text-indigo-500 transition-colors">01</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Join Our Discord</h3>
+                        <p class="text-gray-400 text-sm mb-4">Required to access the server and stay updated.</p>
+                        <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="text-indigo-400 text-xs font-bold hover:underline">JOIN DISCORD →</a>
+                    </div>
+                </div>
+                <div class="group flex items-start gap-6 p-6 rounded-2xl border border-white/5 hover:border-green-500/50 hover:bg-green-500/5 transition-all">
+                    <div class="text-4xl font-black text-white/10 group-hover:text-green-500 transition-colors">02</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Get Minecraft Java</h3>
+                        <p class="text-gray-400 text-sm">Make sure you have Java Edition 1.20+ installed.</p>
+                    </div>
+                </div>
+                <div class="group flex items-start gap-6 p-6 rounded-2xl border border-white/5 hover:border-red-500/50 hover:bg-red-500/5 transition-all">
+                    <div class="text-4xl font-black text-white/10 group-hover:text-red-500 transition-colors">03</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Copy Server IP</h3>
+                        <p class="text-gray-400 text-sm mb-4">Singapore: <code id="displayIpSG" class="bg-black/30 px-2 py-1 rounded text-red-300">play.atheronsmp.fun:25570</code></p>
+                        <button onclick="openIpModal()" class="text-red-400 text-xs font-bold hover:underline">VIEW ALL IPS →</button>
+                    </div>
+                </div>
+                <div class="group flex items-start gap-6 p-6 rounded-2xl border border-white/5 hover:border-yellow-500/50 hover:bg-yellow-500/5 transition-all">
+                    <div class="text-4xl font-black text-white/10 group-hover:text-yellow-500 transition-colors">04</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Add Server & Play</h3>
+                        <p class="text-gray-400 text-sm">Paste the IP into Multiplayer and join the battle!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="winners" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28">
+            <h2 class="text-3xl font-black text-center text-white mb-12 uppercase tracking-wide">Hall of Fame</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                    <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
+                    <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 1</div>
+                    <div class="font-bold text-xl text-white">Team Sightless</div>
+                    <div class="text-sm text-gray-400 mt-1">Mannat_69</div>
+                </div>
+
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                    <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
+                    <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 2</div>
+                    <div class="font-bold text-xl text-white">Team Aura</div>
+                    <div class="text-sm text-gray-400 mt-1">ItzMeNilesh_</div>
+                </div>
+
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                    <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
+                    <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 3</div>
+                    <div class="font-bold text-xl text-white">Team Aura</div>
+                    <div class="text-sm text-gray-400 mt-1">Aizgamer98</div>
+                </div>
+
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                    <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
+                    <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 4</div>
+                    <div class="font-bold text-xl text-white">Team Sinclaires</div>
+                    <div class="text-sm text-gray-400 mt-1">ItzMeNilesh_</div>
+                </div>
+
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                    <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
+                    <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 5</div>
+                    <div class="font-bold text-xl text-white">Team Kotaa</div>
+                    <div class="text-sm text-gray-400 mt-1">OKA</div>
+                </div>
+
+                <div class="bg-red-500/5 p-6 rounded-2xl border border-red-500/20 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-red-500/5 animate-pulse"></div>
+                    <i data-lucide="swords" class="w-8 h-8 text-red-500 mx-auto mb-3 relative z-10"></i>
+                    <div class="text-xs text-red-400 uppercase font-bold mb-2 relative z-10">Season 6</div>
+                    <div class="font-black text-xl text-white relative z-10">RUNNING CURRENTLY</div>
+                    <div class="text-sm text-gray-400 mt-1 relative z-10">Who will win?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="staff" class="max-w-4xl mx-auto px-6 mb-32 text-center scroll-mt-28">
+            <div class="bg-[#0a0a0f] border border-white/10 rounded-2xl p-10 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-purple-500/20 transition-all"></div>
+                <h3 class="text-2xl font-bold text-white mb-2 relative z-10">Staff Applications</h3>
+                <p class="text-gray-400 mb-6 relative z-10">Join the team and help manage the community. Apply via Discord ticket.</p>
+                <button onclick="openStaffModal()" class="inline-block px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity relative z-10 shadow-lg shadow-purple-900/20">Apply Now</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="bg-[#050505] py-20 border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <i data-lucide="gamepad-2" class="w-8 h-8 text-red-500"></i>
+                <h2 class="text-3xl font-black text-white tracking-wide">ATHERON SMP <span class="text-red-500">S6</span></h2>
+            </div>
+            <p class="text-gray-400 text-sm mb-8 leading-relaxed max-w-lg mx-auto">
+                The best competitive Asia SMP. High performance, zero corruption, ultimate competition.
+            </p>
+            
+            <a href="store.html" class="inline-flex items-center gap-2 px-10 py-4 rounded-xl border border-red-500/30 bg-red-500/5 text-white font-bold text-sm hover:bg-red-500/10 hover:border-red-500/60 transition-all shadow-[0_0_30px_rgba(239,68,68,0.15)] mb-8">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                Visit Official Store
+            </a>
+
+            <div class="flex justify-center mb-10">
+                <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="w-14 h-14 rounded-2xl bg-[#5865F2] flex items-center justify-center hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(88,101,242,0.3)] hover:scale-105 transform duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gamepad-2"><path d="M18.894 4.106a14.717 14.717 0 0 0-3.95-1.258.07.07 0 0 0-.075.035c-.247.45-.515 1.01-.655 1.474a13.38 13.38 0 0 0-4.428 0c-.14-.473-.418-1.024-.665-1.474a.072.072 0 0 0-.075-.035 14.72 14.72 0 0 0-3.95 1.258.073.073 0 0 0-.036.052C3.12 7.72 2.392 13.048 3.328 18.283a.071.071 0 0 0 .029.052 14.743 14.743 0 0 0 4.604 2.3.072.072 0 0 0 .078-.026 10.375 10.375 0 0 1 1.96-1.58.069.069 0 0 0 .01-.097 9.873 9.873 0 0 0-1.228-.59.07.07 0 0 1-.037-.095c.245-.116.486-.237.722-.366a.072.072 0 0 1 .078-.006 10.635 10.635 0 0 1 8.974 0 .072.072 0 0 1 .078.006c.23.123.472.246.72.366a.07.07 0 0 1-.036.095 9.497 9.497 0 0 0-1.228.59.068.068 0 0 0-.01.097 10.463 10.463 0 0 1 1.96 1.58.073.073 0 0 0 .078.026 14.764 14.764 0 0 0 4.604-2.3.071.071 0 0 0 .029-.052c.987-5.59-1.048-10.87-4.14-14.177a.073.073 0 0 0-.036-.052ZM8.62 14.53c-1.127 0-2.05-.995-2.05-2.21 0-1.215.91-2.21 2.05-2.21 1.15 0 2.063 1.005 2.05 2.21 0 1.215-.91 2.21-2.05 2.21Zm6.76 0c-1.126 0-2.05-.995-2.05-2.21 0-1.215.91-2.21 2.05-2.21 1.15 0 2.063 1.005 2.05 2.21 0 1.215-.91 2.21-2.05 2.21Z"/></svg>
+                </a>
+            </div>
+
+            <div class="text-[10px] text-gray-600 font-medium mb-2">
+                &copy; 2026 Atheron SMP. Not affiliated with Mojang AB.
+            </div>
+            <div class="text-[9px] text-gray-800 font-mono font-bold tracking-[0.2em] uppercase">
+                SG: <span id="footerIpSG">play.atheronsmp.fun:25570</span> • AE: <span id="footerIpAE">uae.atheronsmp.fun:3194</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="discordModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div id="discordContent" class="bg-[#0f0f15] border border-indigo-500/20 w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(79,70,229,0.15)] relative transform transition-all text-center p-8">
+            <button onclick="closeModals()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="w-16 h-16 bg-[#5865F2]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="message-square" class="w-8 h-8 text-[#5865F2]"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3">Discord Required!</h2>
+            <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                You must join our Discord server before you can access the Minecraft server. This helps us maintain our competitive community standards.
+            </p>
+            <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="block w-full py-3.5 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl font-bold text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                Join Discord Server
+            </a>
+        </div>
+    </div>
+
+    <div id="staffModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div id="staffContent" class="bg-[#0f0f15] border border-purple-500/20 w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.15)] relative transform transition-all text-center p-8">
+            <button onclick="closeModals()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="users" class="w-8 h-8 text-purple-500"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3">Join this Discord</h2>
+            <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                To apply for staff, please join our Discord server and open a ticket under the <strong>#staff-application</strong> channel.
+            </p>
+            <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="block w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl font-bold text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                Open Ticket on Discord
+            </a>
+        </div>
+    </div>
+
+    <div id="ipModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div id="ipContent" class="bg-[#08080a] border border-white/10 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl relative transform transition-all">
+            <div class="h-1 w-full bg-gradient-to-r from-red-500 to-indigo-600"></div>
+            <button onclick="closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+
+            <div class="p-8">
+                <div class="flex flex-col items-center mb-8">
+                    <div class="w-12 h-12 rounded-xl border-2 border-red-500/50 flex items-center justify-center mb-4 text-red-400">
+                        <i data-lucide="server" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Server IPs (Choose Closest Region)</h2>
+                    <p class="text-gray-500 text-sm mt-2 text-center">Choose the server closest to you and make sure to use the port.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-[#121217] border border-white/5 rounded-xl p-5 flex items-center justify-between group hover:border-white/10 transition-colors">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-bold text-gray-300">SG</span>
+                                <span class="font-bold text-white">Singapore</span>
+                            </div>
+                            <div class="font-mono text-red-400 text-sm" id="modalIpSG">play.atheronsmp.fun:25570</div>
+                        </div>
+                        <button id="btnIpSG" onclick="copyIp(this, 'play.atheronsmp.fun:25570')" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors tooltip">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="bg-[#121217] border border-white/5 rounded-xl p-5 flex items-center justify-between group hover:border-white/10 transition-colors">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-bold text-gray-300">AE</span>
+                                <span class="font-bold text-white">Middle East</span>
+                            </div>
+                            <div class="font-mono text-red-400 text-sm" id="modalIpAE">uae.atheronsmp.fun:3194</div>
+                        </div>
+                        <button id="btnIpAE" onclick="copyIp(this, 'uae.atheronsmp.fun:3194')" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors tooltip">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex items-center justify-center gap-6 text-xs font-bold text-gray-500">
+                    <div class="flex items-center gap-2 text-green-500">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        Server Online
+                    </div>
+                    <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors">
+                        <i data-lucide="message-square" class="w-3 h-3"></i>
+                        Discord Required
+                    </a>
+                    <div class="flex items-center gap-2 text-green-400">
+                        <i data-lucide="shield-check" class="w-3 h-3"></i>
+                        Protected
+                    </div>
+                </div>
+                
+                <p class="text-[10px] text-gray-600 text-center mt-6">Choose the closest region and be sure to include the :port when adding the server.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        // --- DYNAMIC CONTENT LOADER ---
+        const config = JSON.parse(localStorage.getItem('siteConfig') || '{"sg":"play.atheronsmp.fun:25570", "ae":"uae.atheronsmp.fun:3194", "discord":"https://discord.gg/xnmKmfsggt"}');
+        
+        // Update IPs
+        document.getElementById('displayIpSG').innerText = config.sg;
+        document.getElementById('footerIpSG').innerText = config.sg;
+        document.getElementById('footerIpAE').innerText = config.ae;
+        document.getElementById('modalIpSG').innerText = config.sg;
+        document.getElementById('modalIpAE').innerText = config.ae;
+        
+        // Update Copy Buttons
+        document.getElementById('btnIpSG').setAttribute('onclick', `copyIp(this, '${config.sg}')`);
+        document.getElementById('btnIpAE').setAttribute('onclick', `copyIp(this, '${config.ae}')`);
+
+        // Update Discord Links
+        if(config.discord) {
+            document.querySelectorAll('a[href*="discord.gg"]').forEach(el => el.href = config.discord);
+        }
+
+        // Load Rules
+        const defaultRules = [
+            { title: "Community Conduct", icon: "message-circle-heart", points: ["Respect all players and staff", "No toxicity, harassment, hate speech", "No advertising or spamming", "Respect staff decisions"] },
+            { title: "Gameplay Integrity", icon: "shield-alert", points: ["No hacking, cheating, or unfair advantages", "No exploits, dupes, or bug abuse", "No griefing, stealing, or damaging builds", "Spawn builds are strictly protected", "No lag machines", "No alt grinding"] },
+            { title: "Mods & Client Rules", icon: "cpu", points: ["Player-tracking mods are NOT allowed", "Mods giving unfair PvP advantages are banned", "Replay Mod recording is REQUIRED for reports"] }
+        ];
+        
+        let rules = JSON.parse(localStorage.getItem('siteRules'));
+        if(!rules || rules.length === 0) {
+            rules = defaultRules;
+            localStorage.setItem('siteRules', JSON.stringify(rules));
+        }
+
+        const rulesContainer = document.querySelector('#rules .grid');
+        if(rulesContainer) {
+            rulesContainer.innerHTML = '';
+            rules.forEach(r => {
+                const pointsHtml = r.points.map(p => `<li class="flex items-start gap-3"><span class="text-blue-500 mt-1">•</span> ${p}</li>`).join('');
+                rulesContainer.innerHTML += `
+                    <div class="feature-card bg-[#0a0a0f] p-8 rounded-3xl h-full">
+                        <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-500">
+                            <i data-lucide="${r.icon}" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">${r.title}</h3>
+                        <ul class="space-y-3 text-sm text-gray-400">${pointsHtml}</ul>
+                    </div>
+                `;
+            });
+        }
+
+        // Load Winners
+        const defaultWinners = [
+            { season: "Season 1", team: "Team Sightless", player: "Mannat_69" },
+            { season: "Season 2", team: "Team Aura", player: "ItzMeNilesh_" },
+            { season: "Season 3", team: "Team Aura", player: "Aizgamer98" },
+            { season: "Season 4", team: "Team Sinclaires", player: "ItzMeNilesh_" },
+            { season: "Season 5", team: "Team Kotaa", player: "OKA" }
+        ];
+
+        let winners = JSON.parse(localStorage.getItem('siteWinners'));
+        if(!winners || winners.length === 0) {
+            winners = defaultWinners;
+            localStorage.setItem('siteWinners', JSON.stringify(winners));
+        }
+
+        const winnersContainer = document.querySelector('#winners .grid');
+        if(winnersContainer) {
+            winnersContainer.innerHTML = '';
+            winners.forEach(w => {
+                winnersContainer.innerHTML += `
+                    <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                        <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
+                        <div class="text-xs text-gray-500 uppercase font-bold mb-2">${w.season}</div>
+                        <div class="font-bold text-xl text-white">${w.team}</div>
+                        <div class="text-sm text-gray-400 mt-1">${w.player}</div>
+                    </div>
+                `;
+            });
+            // Add Current Season Card
+            winnersContainer.innerHTML += `
+                <div class="bg-red-500/5 p-6 rounded-2xl border border-red-500/20 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-red-500/5 animate-pulse"></div>
+                    <i data-lucide="swords" class="w-8 h-8 text-red-500 mx-auto mb-3 relative z-10"></i>
+                    <div class="text-xs text-red-400 uppercase font-bold mb-2 relative z-10">Season 6</div>
+                    <div class="font-black text-xl text-white relative z-10">RUNNING CURRENTLY</div>
+                    <div class="text-sm text-gray-400 mt-1 relative z-10">Who will win?</div>
+                </div>
+            `;
+        }
+        
+        lucide.createIcons();
+
+        function toggleMainMenu() {
+            document.getElementById('mainMenu').classList.toggle('open');
+            document.body.style.overflow = document.body.style.overflow === 'hidden' ? '' : 'hidden';
+        }
+
+        function openIpModalFromMenu() {
+            toggleMainMenu(); // Close Menu
+            setTimeout(openIpModal, 300); // Open IP Modal
+        }
+
+        const discordModal = document.getElementById('discordModal'); const discordContent = document.getElementById('discordContent');
+        const ipModal = document.getElementById('ipModal'); const ipContent = document.getElementById('ipContent');
+        const staffModal = document.getElementById('staffModal'); const staffContent = document.getElementById('staffContent');
+        
+        function openDiscordModal() { 
+            if(document.getElementById('mainMenu').classList.contains('open')) toggleMainMenu();
+            discordModal.classList.remove('hidden'); 
+            setTimeout(() => { discordContent.classList.remove('modal-enter'); discordContent.classList.add('modal-enter-active'); }, 10); 
+        }
+
+        function openStaffModal() {
+            if(document.getElementById('mainMenu').classList.contains('open')) toggleMainMenu();
+            staffModal.classList.remove('hidden');
+            setTimeout(() => { staffContent.classList.remove('modal-enter'); staffContent.classList.add('modal-enter-active'); }, 10);
+        }
+        
+        function openIpModal() { 
+            if(document.getElementById('mainMenu').classList.contains('open')) toggleMainMenu();
+            ipModal.classList.remove('hidden'); 
+            setTimeout(() => { ipContent.classList.remove('modal-enter'); ipContent.classList.add('modal-enter-active'); }, 10); 
+        }
+        
+        function closeModals() { 
+            discordContent.classList.add('modal-exit'); discordContent.classList.remove('modal-enter-active'); 
+            ipContent.classList.add('modal-exit'); ipContent.classList.remove('modal-enter-active'); 
+            staffContent.classList.add('modal-exit'); staffContent.classList.remove('modal-enter-active');
+            setTimeout(() => { 
+                discordModal.classList.add('hidden'); discordContent.classList.remove('modal-exit'); discordContent.classList.add('modal-enter'); 
+                ipModal.classList.add('hidden'); ipContent.classList.remove('modal-exit'); ipContent.classList.add('modal-enter'); 
+                staffModal.classList.add('hidden'); staffContent.classList.remove('modal-exit'); staffContent.classList.add('modal-enter');
+            }, 200); 
+        }
+        
+        function copyIp(btn, ip) { navigator.clipboard.writeText(ip); btn.classList.add('show'); const originalIcon = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-500"></i>'; lucide.createIcons(); setTimeout(() => { btn.classList.remove('show'); btn.innerHTML = originalIcon; lucide.createIcons(); }, 2000); }
+        
+        window.onclick = function(event) { if (event.target == discordModal || event.target == ipModal || event.target == staffModal) { closeModals(); } }
+    </script>
+</body>
+</html>

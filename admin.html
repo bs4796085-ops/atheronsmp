@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atheron SMP | Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 900: '#050505', 800: '#0a0a0a', 700: '#111111' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: white; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="fixed inset-0 z-50 bg-[#050505] flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-[#0a0a0f] border border-white/10 rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mx-auto mb-4 font-bold text-xl">A</div>
+                <h1 class="text-2xl font-black text-white">ADMIN PANEL</h1>
+                <p class="text-gray-500 text-sm">Restricted Access</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Email</label>
+                    <input type="email" id="email" class="w-full bg-[#15151a] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-red-500 focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">Password</label>
+                    <input type="password" id="password" class="w-full bg-[#15151a] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-red-500 focus:outline-none" required>
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors">LOGIN</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div id="adminContent" class="hidden">
+        <nav class="border-b border-white/5 bg-[#0a0a0f]">
+            <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="font-bold text-lg flex items-center gap-2">
+                    <span class="text-red-500">ADMIN</span> DASHBOARD
+                </div>
+                <div class="flex gap-4">
+                    <a href="index.html" class="text-sm text-gray-400 hover:text-white">Back to Site</a>
+                    <button onclick="logout()" class="text-sm text-red-400 hover:text-red-300">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-6 py-10">
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-[#0a0a0f] border border-white/5 p-6 rounded-xl">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1">Total Receipts</div>
+                    <div class="text-3xl font-black text-white" id="totalReceipts">0</div>
+                </div>
+                <div class="bg-[#0a0a0f] border border-white/5 p-6 rounded-xl">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1">Pending Actions</div>
+                    <div class="text-3xl font-black text-yellow-500" id="pendingCount">0</div>
+                </div>
+                <div class="bg-[#0a0a0f] border border-white/5 p-6 rounded-xl">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1">System Status</div>
+                    <div class="text-3xl font-black text-green-500">ONLINE</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold text-white">Generated Receipts</h2>
+                <div class="flex gap-3">
+                    <button onclick="clearReceipts()" class="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold rounded-lg hover:bg-red-500/20 transition-colors">
+                        CLEAR ALL DATA
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-[#0a0a0f] border border-white/5 rounded-xl overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white/5 text-xs text-gray-400 uppercase">
+                            <th class="p-4 font-bold">TXN ID</th>
+                            <th class="p-4 font-bold">Date</th>
+                            <th class="p-4 font-bold">IGN</th>
+                            <th class="p-4 font-bold">Product</th>
+                            <th class="p-4 font-bold">Amount</th>
+                            <th class="p-4 font-bold">Status</th>
+                            <th class="p-4 font-bold text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receiptsTableBody" class="text-sm text-gray-300 divide-y divide-white/5">
+                        <!-- Rows injected via JS -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="hidden p-10 text-center text-gray-500 text-sm">
+                    No receipts found.
+                </div>
+            </div>
+
+            <!-- Site Configuration (IPs) -->
+            <div class="mt-10">
+                <h2 class="text-xl font-bold text-white mb-6">Server Configuration</h2>
+                <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Singapore IP (Main)</label>
+                            <input type="text" id="configIpSG" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-red-500 outline-none" placeholder="play.atheronsmp.fun:25570">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Middle East IP</label>
+                            <input type="text" id="configIpAE" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-red-500 outline-none" placeholder="uae.atheronsmp.fun:3194">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Discord Invite URL</label>
+                            <input type="text" id="configDiscord" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-red-500 outline-none" placeholder="https://discord.gg/xnmKmfsggt">
+                        </div>
+                    </div>
+                    <button onclick="saveConfig()" class="mt-4 px-6 py-2 bg-white text-black text-xs font-bold rounded-lg hover:bg-gray-200 transition-colors">SAVE IPS</button>
+                </div>
+            </div>
+
+            <!-- Store Editor -->
+            <div class="mt-10">
+                <h2 class="text-xl font-bold text-white mb-6">Store Editor</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Add Product Form -->
+                    <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Add / Edit Product</h3>
+                        <form onsubmit="saveProduct(event)" class="space-y-4">
+                            <input type="hidden" id="editIndex" value="-1">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Product Name</label>
+                                <input type="text" id="prodName" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500 outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Category</label>
+                                <select id="prodCategory" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none">
+                                    <option value="ranks">Ranks</option>
+                                    <option value="items">Items</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Price USD</label>
+                                    <input type="number" step="0.01" id="prodPriceUSD" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Price INR</label>
+                                    <input type="number" id="prodPriceINR" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Price PHP</label>
+                                    <input type="number" id="prodPricePHP" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" required>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tag (e.g. 1 Season)</label>
+                                    <input type="text" id="prodTag" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Color Theme</label>
+                                    <select id="prodColor" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none">
+                                        <option value="blue">Blue (Standard)</option>
+                                        <option value="purple">Purple (Premium)</option>
+                                        <option value="yellow">Yellow (Ultimate)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Features (One per line)</label>
+                                <textarea id="prodFeatures" rows="4" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" placeholder="Feature 1&#10;Feature 2"></textarea>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="prodBogo" class="rounded bg-[#15151a] border-white/10">
+                                <label for="prodBogo" class="text-xs text-gray-400">Enable BOGO (Buy 1 Get 1)</label>
+                            </div>
+                            <button type="submit" id="saveProdBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition-colors">ADD PRODUCT</button>
+                        </form>
+                    </div>
+
+                    <!-- Product List -->
+                    <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6 flex flex-col">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Current Products</h3>
+                        <div class="flex-1 overflow-y-auto max-h-[500px] space-y-3" id="productList">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rules Editor -->
+            <div class="mt-10">
+                <h2 class="text-xl font-bold text-white mb-6">Rules Editor</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Add / Edit Rule</h3>
+                        <form onsubmit="saveRule(event)" class="space-y-4">
+                            <input type="hidden" id="editRuleIndex" value="-1">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Rule Title</label>
+                                <input type="text" id="ruleTitle" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Icon Name (Lucide)</label>
+                                <input type="text" id="ruleIcon" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" placeholder="shield-alert">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Points (One per line)</label>
+                                <textarea id="rulePoints" rows="4" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" placeholder="No hacking&#10;No griefing"></textarea>
+                            </div>
+                            <button type="submit" id="saveRuleBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg transition-colors">ADD RULE</button>
+                        </form>
+                    </div>
+                    <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6 flex flex-col">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Current Rules</h3>
+                        <div class="flex-1 overflow-y-auto max-h-[400px] space-y-3" id="rulesList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Winners Editor -->
+            <div class="mt-10 mb-20">
+                <h2 class="text-xl font-bold text-white mb-6">Hall of Fame Editor</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Add / Edit Winner</h3>
+                        <form onsubmit="saveWinner(event)" class="space-y-4">
+                            <input type="hidden" id="editWinnerIndex" value="-1">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Season Name</label>
+                                <input type="text" id="winnerSeason" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" placeholder="Season 1">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Team Name</label>
+                                <input type="text" id="winnerTeam" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" placeholder="Team Name">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Player Name</label>
+                                <input type="text" id="winnerPlayer" class="w-full bg-[#15151a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none" placeholder="PlayerIGN">
+                            </div>
+                            <button type="submit" id="saveWinnerBtn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 rounded-lg transition-colors">ADD WINNER</button>
+                        </form>
+                    </div>
+                    <div class="bg-[#0a0a0f] border border-white/5 rounded-xl p-6 flex flex-col">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Current Winners</h3>
+                        <div class="flex-1 overflow-y-auto max-h-[400px] space-y-3" id="winnersList"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Check Session on Load
+        if(localStorage.getItem('adminSession') === 'true') {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('adminContent').classList.remove('hidden');
+            loadReceipts();
+            loadProducts();
+            loadConfig();
+            loadRules();
+            loadWinners();
+        }
+
+        // Auth Logic
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+
+            if(email === 'bs4796085@gmail.com' && pass === 'bapan2735G') {
+                localStorage.setItem('adminSession', 'true');
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminContent').classList.remove('hidden');
+                loadReceipts();
+                loadProducts();
+                loadConfig();
+                loadRules();
+                loadWinners();
+            } else {
+                alert('Invalid Credentials');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminSession');
+            location.reload();
+        }
+
+        // --- INSTANT UPDATES ---
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'adminReceipts') {
+                loadReceipts();
+            }
+        });
+
+        // Data Logic
+        function loadReceipts() {
+            const receipts = JSON.parse(localStorage.getItem('adminReceipts') || '[]');
+            const tbody = document.getElementById('receiptsTableBody');
+            const empty = document.getElementById('emptyState');
+            
+            document.getElementById('totalReceipts').innerText = receipts.length;
+            document.getElementById('pendingCount').innerText = receipts.filter(r => r.status === 'Pending').length;
+
+            tbody.innerHTML = '';
+            if(receipts.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            receipts.forEach((r, index) => {
+                const row = `
+                    <tr class="hover:bg-white/5 transition-colors">
+                        <td class="p-4 font-mono text-xs text-gray-500">${r.id}</td>
+                        <td class="p-4">${r.date}</td>
+                        <td class="p-4 font-bold text-white">${r.ign}</td>
+                        <td class="p-4">${r.product}</td>
+                        <td class="p-4 text-green-400">${r.amount}</td>
+                        <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${r.status === 'Pending' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-green-500/10 text-green-500'}">${r.status}</span></td>
+                        <td class="p-4 text-right">
+                            ${r.status === 'Pending' ? `<button onclick="markCleared(${index})" class="text-xs text-blue-400 hover:underline font-bold">ACCEPT DUE</button>` : '<span class="text-gray-600 text-xs">Completed</span>'}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function clearReceipts() {
+            if(confirm('Are you sure you want to delete all receipts?')) {
+                localStorage.removeItem('adminReceipts');
+                loadReceipts();
+            }
+        }
+
+        function markCleared(index) {
+            const receipts = JSON.parse(localStorage.getItem('adminReceipts') || '[]');
+            if(receipts[index]) {
+                receipts[index].status = 'Cleared';
+                localStorage.setItem('adminReceipts', JSON.stringify(receipts));
+                loadReceipts();
+            }
+        }
+
+        // --- CONFIG LOGIC ---
+        function loadConfig() {
+            const config = JSON.parse(localStorage.getItem('siteConfig') || '{"sg":"play.atheronsmp.fun:25570", "ae":"uae.atheronsmp.fun:3194", "discord":"https://discord.gg/xnmKmfsggt"}');
+            document.getElementById('configIpSG').value = config.sg;
+            document.getElementById('configIpAE').value = config.ae;
+            document.getElementById('configDiscord').value = config.discord || "https://discord.gg/xnmKmfsggt";
+        }
+
+        function saveConfig() {
+            const sg = document.getElementById('configIpSG').value;
+            const ae = document.getElementById('configIpAE').value;
+            const discord = document.getElementById('configDiscord').value;
+            localStorage.setItem('siteConfig', JSON.stringify({ sg, ae, discord }));
+            alert('IPs Updated! Refresh the main website to see changes.');
+        }
+
+        // --- STORE EDITOR LOGIC ---
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('storeProducts') || '[]');
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+
+            if(products.length === 0) {
+                list.innerHTML = '<div class="text-gray-500 text-xs text-center py-4">No products in store.</div>';
+                return;
+            }
+
+            products.forEach((p, index) => {
+                const item = `
+                    <div class="flex items-center justify-between bg-[#15151a] p-3 rounded-lg border border-white/5">
+                        <div>
+                            <div class="font-bold text-white text-sm">${p.name}</div>
+                            <div class="text-[10px] text-gray-500">$${p.prices.USD} • ₹${p.prices.INR} • ₱${p.prices.PHP}</div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="editProduct(${index})" class="text-blue-400 hover:text-blue-300 p-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deleteProduct(${index})" class="text-red-500 hover:text-red-400 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                `;
+                list.innerHTML += item;
+            });
+            lucide.createIcons();
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            const editIndex = parseInt(document.getElementById('editIndex').value);
+            const name = document.getElementById('prodName').value;
+            const category = document.getElementById('prodCategory').value;
+            const usd = document.getElementById('prodPriceUSD').value;
+            const inr = document.getElementById('prodPriceINR').value;
+            const php = document.getElementById('prodPricePHP').value;
+            const tag = document.getElementById('prodTag').value;
+            const color = document.getElementById('prodColor').value;
+            const features = document.getElementById('prodFeatures').value.split('\n').filter(f => f.trim() !== '');
+            const isBogo = document.getElementById('prodBogo').checked;
+
+            const newProduct = {
+                id: editIndex >= 0 ? JSON.parse(localStorage.getItem('storeProducts'))[editIndex].id : 'prod_' + Date.now(),
+                name,
+                category,
+                prices: { USD: usd, INR: inr, PHP: php },
+                tag,
+                color,
+                features,
+                isBogo,
+                highlight: color === 'yellow' // Auto highlight yellow items
+            };
+
+            const products = JSON.parse(localStorage.getItem('storeProducts') || '[]');
+            
+            if(editIndex >= 0) {
+                products[editIndex] = newProduct;
+                document.getElementById('editIndex').value = "-1";
+                document.getElementById('saveProdBtn').innerText = "ADD PRODUCT";
+                document.getElementById('saveProdBtn').classList.remove('bg-green-600', 'hover:bg-green-700');
+                document.getElementById('saveProdBtn').classList.add('bg-blue-600', 'hover:bg-blue-700');
+            } else {
+                products.push(newProduct);
+            }
+            
+            localStorage.setItem('storeProducts', JSON.stringify(products));
+            
+            e.target.reset();
+            loadProducts();
+            alert(editIndex >= 0 ? 'Product Updated!' : 'Product Added!');
+        }
+
+        function editProduct(index) {
+            const products = JSON.parse(localStorage.getItem('storeProducts') || '[]');
+            const p = products[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('prodName').value = p.name;
+            document.getElementById('prodCategory').value = p.category || 'ranks';
+            document.getElementById('prodPriceUSD').value = p.prices.USD;
+            document.getElementById('prodPriceINR').value = p.prices.INR;
+            document.getElementById('prodPricePHP').value = p.prices.PHP;
+            document.getElementById('prodTag').value = p.tag;
+            document.getElementById('prodColor').value = p.color;
+            document.getElementById('prodFeatures').value = p.features.join('\n');
+            document.getElementById('prodBogo').checked = p.isBogo || false;
+            
+            const btn = document.getElementById('saveProdBtn');
+            btn.innerText = "UPDATE PRODUCT";
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+        }
+
+        function deleteProduct(index) {
+            if(confirm('Delete this product?')) {
+                const products = JSON.parse(localStorage.getItem('storeProducts') || '[]');
+                products.splice(index, 1);
+                localStorage.setItem('storeProducts', JSON.stringify(products));
+                loadProducts();
+            }
+        }
+
+        // --- RULES LOGIC ---
+        function loadRules() {
+            const rules = JSON.parse(localStorage.getItem('siteRules') || '[]');
+            const list = document.getElementById('rulesList');
+            list.innerHTML = '';
+            rules.forEach((r, index) => {
+                list.innerHTML += `
+                    <div class="flex items-center justify-between bg-[#15151a] p-3 rounded-lg border border-white/5">
+                        <div class="text-white text-sm font-bold">${r.title}</div>
+                        <div class="flex gap-1">
+                            <button onclick="editRule(${index})" class="text-blue-400 p-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deleteRule(${index})" class="text-red-500 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        function saveRule(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('editRuleIndex').value);
+            const title = document.getElementById('ruleTitle').value;
+            const icon = document.getElementById('ruleIcon').value || 'shield';
+            const points = document.getElementById('rulePoints').value.split('\n').filter(l => l.trim() !== '');
+            
+            const rules = JSON.parse(localStorage.getItem('siteRules') || '[]');
+            const newRule = { title, icon, points };
+            
+            if(index >= 0) rules[index] = newRule;
+            else rules.push(newRule);
+            
+            localStorage.setItem('siteRules', JSON.stringify(rules));
+            e.target.reset();
+            document.getElementById('editRuleIndex').value = "-1";
+            document.getElementById('saveRuleBtn').innerText = "ADD RULE";
+            loadRules();
+        }
+
+        function editRule(index) {
+            const rules = JSON.parse(localStorage.getItem('siteRules') || '[]');
+            const r = rules[index];
+            document.getElementById('editRuleIndex').value = index;
+            document.getElementById('ruleTitle').value = r.title;
+            document.getElementById('ruleIcon').value = r.icon;
+            document.getElementById('rulePoints').value = r.points.join('\n');
+            document.getElementById('saveRuleBtn').innerText = "UPDATE RULE";
+        }
+
+        function deleteRule(index) {
+            if(confirm('Delete rule?')) {
+                const rules = JSON.parse(localStorage.getItem('siteRules') || '[]');
+                rules.splice(index, 1);
+                localStorage.setItem('siteRules', JSON.stringify(rules));
+                loadRules();
+            }
+        }
+
+        // --- WINNERS LOGIC ---
+        function loadWinners() {
+            const winners = JSON.parse(localStorage.getItem('siteWinners') || '[]');
+            const list = document.getElementById('winnersList');
+            list.innerHTML = '';
+            winners.forEach((w, index) => {
+                list.innerHTML += `
+                    <div class="flex items-center justify-between bg-[#15151a] p-3 rounded-lg border border-white/5">
+                        <div>
+                            <div class="text-white text-sm font-bold">${w.season}</div>
+                            <div class="text-[10px] text-gray-500">${w.team} - ${w.player}</div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="editWinner(${index})" class="text-blue-400 p-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deleteWinner(${index})" class="text-red-500 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        function saveWinner(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('editWinnerIndex').value);
+            const season = document.getElementById('winnerSeason').value;
+            const team = document.getElementById('winnerTeam').value;
+            const player = document.getElementById('winnerPlayer').value;
+            
+            const winners = JSON.parse(localStorage.getItem('siteWinners') || '[]');
+            const newWinner = { season, team, player };
+            
+            if(index >= 0) winners[index] = newWinner;
+            else winners.push(newWinner);
+            
+            localStorage.setItem('siteWinners', JSON.stringify(winners));
+            e.target.reset();
+            document.getElementById('editWinnerIndex').value = "-1";
+            document.getElementById('saveWinnerBtn').innerText = "ADD WINNER";
+            loadWinners();
+        }
+
+        function editWinner(index) {
+            const winners = JSON.parse(localStorage.getItem('siteWinners') || '[]');
+            const w = winners[index];
+            document.getElementById('editWinnerIndex').value = index;
+            document.getElementById('winnerSeason').value = w.season;
+            document.getElementById('winnerTeam').value = w.team;
+            document.getElementById('winnerPlayer').value = w.player;
+            document.getElementById('saveWinnerBtn').innerText = "UPDATE WINNER";
+        }
+
+        function deleteWinner(index) {
+            if(confirm('Delete winner?')) {
+                const winners = JSON.parse(localStorage.getItem('siteWinners') || '[]');
+                winners.splice(index, 1);
+                localStorage.setItem('siteWinners', JSON.stringify(winners));
+                loadWinners();
+            }
+        }
+    </script>
+</body>
+</html>
