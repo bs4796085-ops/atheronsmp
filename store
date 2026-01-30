@@ -52,19 +52,13 @@
         .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 0.3s ease, transform 0.3s ease; }
         .modal-exit { opacity: 0; transform: scale(0.95); transition: opacity 0.2s ease, transform 0.2s ease; }
     </style>
-    
-    <!-- Vercel Web Analytics -->
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased">
 
     <nav class="border-b border-white/5 bg-dark-800/50 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold text-xl">A</div>
+                <img src="https://i.postimg.cc/Vk278f4Q/file-000000007c7c720680ea04894073b7d8.webp" alt="Atheron SMP" class="w-10 h-10 rounded-lg shadow-lg shadow-purple-900/20 object-cover">
                 <span class="font-bold text-xl tracking-wide">ATHERON SMP</span>
             </div>
             <div class="hidden md:flex items-center gap-4 text-sm font-medium text-gray-400">
@@ -280,6 +274,7 @@
         lucide.createIcons();
         let currentRank = "", currentPrice = "", currentInrPrice = "", selectedPayment = "";
         let currentCurrency = "USD";
+        let allProducts = [];
 
         // --- Store Data Initialization ---
         const defaultProducts = [
@@ -310,7 +305,8 @@
                 products = defaultProducts;
                 localStorage.setItem('storeProducts', JSON.stringify(products));
             }
-            renderProducts(products);
+            allProducts = products;
+            filterCategory('all');
         }
 
         function renderProducts(products) {
@@ -376,13 +372,16 @@
             document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('cat-' + cat).classList.add('active');
 
-            // Show/Hide Elements
-            if (cat === 'items') {
-                // Simple filter logic for demo: hide all cards that don't match category
+            // Filter Logic
+            const filtered = cat === 'all' ? allProducts : allProducts.filter(p => p.category === cat);
+
+            if (filtered.length === 0) {
+                document.getElementById('productsGrid').classList.add('hidden');
                 document.getElementById('noItemsMsg').classList.remove('hidden');
             } else {
                 document.getElementById('productsGrid').classList.remove('hidden');
                 document.getElementById('noItemsMsg').classList.add('hidden');
+                renderProducts(filtered);
             }
         }
 
