@@ -55,7 +55,7 @@
                     <span class="text-red-500">ADMIN</span> DASHBOARD
                 </div>
                 <div class="flex gap-4">
-                    <a href="/info" class="text-sm text-gray-400 hover:text-white">Back to Site</a>
+                    <a href="index.html" class="text-sm text-gray-400 hover:text-white">Back to Site</a>
                     <button onclick="logout()" class="text-sm text-red-400 hover:text-red-300">Logout</button>
                 </div>
             </div>
@@ -600,6 +600,9 @@
                 loadWinners();
             }
         }
+
+        // Cosmetic URL update
+        if (window.history.replaceState) { window.history.replaceState(null, null, '/admin'); }
     </script>
 </body>
 </html>
