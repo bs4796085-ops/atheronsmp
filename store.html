@@ -577,4 +577,7 @@ Please keep this for your records.`;
         loadStore();
 
         // Cosmetic URL update
-       
+        if (window.history.replaceState) { window.history.replaceState(null, null, '/store'); }
+    </script>
+</body>
+</html>
