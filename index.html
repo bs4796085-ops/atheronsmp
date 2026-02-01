@@ -90,6 +90,28 @@
 
         #splash-screen { transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out; }
         #splash-screen.hidden-splash { opacity: 0; pointer-events: none; transform: scale(1.1); }
+
+        /* Scroll Reveal Animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+
+        .reveal-right { opacity: 0; transform: translateX(60px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+
+        .reveal-zoom { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; }
+        .reveal-zoom.active { opacity: 1; transform: scale(1); }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+
+        /* Company-style Section Headers */
+        .section-header { position: relative; display: inline-block; margin-bottom: 3rem; }
+        .section-header::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: linear-gradient(90deg, transparent, #a855f7, transparent); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden">
@@ -234,31 +256,31 @@
             </div>
         </main>
 
-        <section id="why-best" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28 animate-fade-up delay-100">
+        <section id="why-best" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="pro-card p-8 rounded-2xl text-center group animate-slide-left">
+                <div class="pro-card p-8 rounded-2xl text-center group reveal-left">
                     <div class="text-4xl font-black text-white mb-1">1+</div>
                     <div class="text-xs font-bold text-gray-500 group-hover:text-cyan-400 uppercase tracking-widest transition-colors">SEA Server</div>
                 </div>
-                <div class="pro-card p-8 rounded-2xl text-center group animate-fade-up delay-100">
+                <div class="pro-card p-8 rounded-2xl text-center group reveal stagger-1">
                     <div class="text-4xl font-black text-white mb-1">200+</div>
                     <div class="text-xs font-bold text-gray-500 group-hover:text-orange-400 uppercase tracking-widest transition-colors">Competitors</div>
                 </div>
-                <div class="pro-card p-8 rounded-2xl text-center group animate-slide-right">
+                <div class="pro-card p-8 rounded-2xl text-center group reveal-right">
                     <div class="text-4xl font-black text-white mb-1">1+</div>
                     <div class="text-xs font-bold text-gray-500 group-hover:text-emerald-400 uppercase tracking-widest transition-colors">Admin</div>
                 </div>
             </div>
         </section>
 
-        <section class="max-w-7xl mx-auto px-6 mb-32 animate-fade-up delay-200">
-            <div class="flex items-center gap-4 mb-10">
+        <section class="max-w-7xl mx-auto px-6 mb-32">
+            <div class="flex items-center gap-4 mb-10 reveal">
                 <div class="h-px bg-white/10 flex-1"></div>
                 <h2 class="text-2xl font-bold text-white uppercase tracking-widest">Season 6 Details</h2>
                 <div class="h-px bg-white/10 flex-1"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="pro-card p-8 rounded-3xl animate-slide-left">
+                <div class="pro-card p-8 rounded-3xl reveal-left">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6 text-purple-500"><i data-lucide="swords" class="w-6 h-6"></i></div>
                     <h3 class="text-xl font-bold text-white mb-3">Competitive Survival</h3>
                     <p class="text-sm text-gray-400 leading-relaxed mb-6">Command your team, control resources, and outmaneuver every rival in a relentless, skill-driven survival arena forged for true competitors. No shortcuts, no pay-to-win — only mastery, strategy, and raw Minecraft talent decide who rises.</p>
@@ -267,7 +289,7 @@
                         <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-purple-500"></i> Strict single-admin governance for absolute fairness</li>
                     </ul>
                 </div>
-                <div class="pro-card p-8 rounded-3xl animate-fade-up delay-100">
+                <div class="pro-card p-8 rounded-3xl reveal stagger-1">
                     <div class="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 text-yellow-500"><i data-lucide="crown" class="w-6 h-6"></i></div>
                     <h3 class="text-xl font-bold text-white mb-3">Be the Last Dominant</h3>
                     <p class="text-sm text-gray-400 leading-relaxed mb-6">Fight for control of the world and prove you're the strongest. Only one team can claim the Season 6 crown.</p>
@@ -276,7 +298,7 @@
                         <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> Late-game raids</li>
                     </ul>
                 </div>
-                <div class="pro-card p-8 rounded-3xl relative overflow-hidden animate-slide-right">
+                <div class="pro-card p-8 rounded-3xl relative overflow-hidden reveal-right">
                     <div class="absolute top-0 right-0 p-32 bg-blue-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
                     <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-500"><i data-lucide="zap" class="w-6 h-6"></i></div>
                     <h3 class="text-xl font-bold text-white mb-3">Begin Your Journey in Minutes</h3>
@@ -286,15 +308,15 @@
             </div>
         </section>
 
-        <section id="rules" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28 animate-fade-up">
-            <div class="flex items-center gap-4 mb-10">
+        <section id="rules" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28">
+            <div class="flex items-center gap-4 mb-10 reveal">
                 <div class="h-px bg-white/10 flex-1"></div>
                 <h2 class="text-2xl font-bold text-white uppercase tracking-widest">Server Rules</h2>
                 <div class="h-px bg-white/10 flex-1"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="pro-card p-8 rounded-3xl h-full animate-slide-left">
+                <div class="pro-card p-8 rounded-3xl h-full reveal-left">
                     <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-500">
                         <i data-lucide="message-circle-heart" class="w-6 h-6"></i>
                     </div>
@@ -307,7 +329,7 @@
                     </ul>
                 </div>
 
-                <div class="pro-card p-8 rounded-3xl h-full animate-fade-up delay-100">
+                <div class="pro-card p-8 rounded-3xl h-full reveal stagger-1">
                     <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-6 text-red-500">
                         <i data-lucide="shield-alert" class="w-6 h-6"></i>
                     </div>
@@ -324,7 +346,7 @@
                     </ul>
                 </div>
 
-                <div class="pro-card p-8 rounded-3xl h-full animate-slide-right">
+                <div class="pro-card p-8 rounded-3xl h-full reveal-right">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6 text-purple-500">
                         <i data-lucide="cpu" class="w-6 h-6"></i>
                     </div>
@@ -338,10 +360,12 @@
             </div>
         </section>
 
-        <section id="join" class="max-w-4xl mx-auto px-6 mb-32 animate-fade-up scroll-mt-28">
-            <h2 class="text-3xl font-black text-center text-white mb-12">How to Join</h2>
+        <section id="join" class="max-w-4xl mx-auto px-6 mb-32 scroll-mt-28">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl font-black text-white section-header">How to Join</h2>
+            </div>
             <div class="space-y-4">
-                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300">
+                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300 reveal-left">
                     <div class="text-4xl font-black text-white/10 group-hover:text-indigo-500 transition-colors">01</div>
                     <div>
                         <h3 class="text-xl font-bold text-white mb-2">Join Our Discord</h3>
@@ -349,14 +373,14 @@
                         <a href="https://discord.gg/xnmKmfsggt" target="_blank" class="text-indigo-400 text-xs font-bold hover:underline">JOIN DISCORD →</a>
                     </div>
                 </div>
-                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300">
+                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300 reveal-right stagger-1">
                     <div class="text-4xl font-black text-white/10 group-hover:text-green-500 transition-colors">02</div>
                     <div>
                         <h3 class="text-xl font-bold text-white mb-2">Get Minecraft Java</h3>
                         <p class="text-gray-400 text-sm">Make sure you have Java Edition 1.20+ installed.</p>
                     </div>
                 </div>
-                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300">
+                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300 reveal-left stagger-2">
                     <div class="text-4xl font-black text-white/10 group-hover:text-red-500 transition-colors">03</div>
                     <div>
                         <h3 class="text-xl font-bold text-white mb-2">Copy Server IP</h3>
@@ -364,7 +388,7 @@
                         <button onclick="openIpModal()" class="text-red-400 text-xs font-bold hover:underline">VIEW ALL IPS →</button>
                     </div>
                 </div>
-                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300">
+                <div class="pro-card group flex items-start gap-6 p-6 rounded-2xl transition-all duration-300 reveal-right stagger-3">
                     <div class="text-4xl font-black text-white/10 group-hover:text-yellow-500 transition-colors">04</div>
                     <div>
                         <h3 class="text-xl font-bold text-white mb-2">Add Server & Play</h3>
@@ -374,46 +398,48 @@
             </div>
         </section>
 
-        <section id="winners" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28 animate-fade-up">
-            <h2 class="text-3xl font-black text-center text-white mb-12 uppercase tracking-wide">Hall of Fame</h2>
+        <section id="winners" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-28">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl font-black text-white uppercase tracking-wide section-header">Hall of Fame</h2>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
                 
-                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors reveal-zoom">
                     <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
                     <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 1</div>
                     <div class="font-bold text-xl text-white">Team Sightless</div>
                     <div class="text-sm text-gray-400 mt-1">Mannat_69</div>
                 </div>
 
-                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors reveal-zoom stagger-1">
                     <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
                     <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 2</div>
                     <div class="font-bold text-xl text-white">Team Aura</div>
                     <div class="text-sm text-gray-400 mt-1">ItzMeNilesh_</div>
                 </div>
 
-                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors reveal-zoom stagger-2">
                     <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
                     <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 3</div>
                     <div class="font-bold text-xl text-white">Team Aura</div>
                     <div class="text-sm text-gray-400 mt-1">Aizgamer98</div>
                 </div>
 
-                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors reveal-zoom stagger-3">
                     <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
                     <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 4</div>
                     <div class="font-bold text-xl text-white">Team Sinclaires</div>
                     <div class="text-sm text-gray-400 mt-1">ItzMeNilesh_</div>
                 </div>
 
-                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors">
+                <div class="bg-[#0a0a0f] p-6 rounded-2xl border border-white/5 text-center group hover:border-yellow-500/30 transition-colors reveal-zoom stagger-4">
                     <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-3"></i>
                     <div class="text-xs text-gray-500 uppercase font-bold mb-2">Season 5</div>
                     <div class="font-bold text-xl text-white">Team Kotaa</div>
                     <div class="text-sm text-gray-400 mt-1">OKA</div>
                 </div>
 
-                <div class="bg-purple-500/5 p-6 rounded-2xl border border-purple-500/20 text-center relative overflow-hidden">
+                <div class="bg-purple-500/5 p-6 rounded-2xl border border-purple-500/20 text-center relative overflow-hidden reveal-zoom stagger-4">
                     <div class="absolute inset-0 bg-purple-500/5 animate-pulse"></div>
                     <i data-lucide="swords" class="w-8 h-8 text-purple-500 mx-auto mb-3 relative z-10"></i>
                     <div class="text-xs text-purple-400 uppercase font-bold mb-2 relative z-10">Season 6</div>
@@ -424,7 +450,7 @@
             </div>
         </section>
 
-        <section id="boosters" class="max-w-4xl mx-auto px-6 mb-32 text-center scroll-mt-28 animate-fade-up">
+        <section id="boosters" class="max-w-4xl mx-auto px-6 mb-32 text-center scroll-mt-28 reveal-zoom">
             <div class="relative p-8 rounded-3xl border border-pink-500/40 shadow-[0_0_40px_rgba(236,72,153,0.1)] bg-[#0a0a0f]/50 overflow-hidden">
                 <!-- Glowing background effect -->
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-pink-500/10 blur-[60px] rounded-full pointer-events-none animate-pulse"></div>
@@ -471,7 +497,7 @@
             </div>
         </section>
 
-        <section id="staff" class="max-w-4xl mx-auto px-6 mb-32 text-center scroll-mt-28 animate-fade-up">
+        <section id="staff" class="max-w-4xl mx-auto px-6 mb-32 text-center scroll-mt-28 reveal">
             <div class="bg-[#0a0a0f] border border-purple-500/30 hover:border-purple-500/60 shadow-[0_0_40px_rgba(168,85,247,0.1)] hover:shadow-[0_0_60px_rgba(168,85,247,0.2)] transition-all duration-500 rounded-2xl p-10 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-purple-500/20 transition-all"></div>
                 <h3 class="text-2xl font-bold text-white mb-2 relative z-10">Staff Applications</h3>
@@ -758,6 +784,17 @@
                 card.style.setProperty('--mouse-y', `${y}px`);
             });
         });
+
+        // Scroll Reveal Observer
+        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-zoom').forEach(el => observer.observe(el));
 
         function toggleMainMenu() {
             document.getElementById('mainMenu').classList.toggle('open');
